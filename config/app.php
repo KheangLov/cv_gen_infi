@@ -177,6 +177,7 @@ return [
         Laravel\Passport\PassportServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
         Arcanedev\LogViewer\LogViewerServiceProvider::class,
+        AWT\Providers\ApiLogServiceProvider::class,
 
     ],
 
