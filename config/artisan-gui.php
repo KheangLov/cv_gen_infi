@@ -148,6 +148,9 @@ return [
             'migrate:rollback',
             'migrate:status',
         ],
+        'passport' => [
+            'passport:install',
+        ],
         'queue' => [
             'queue:batches-table',
             'queue:clear',
@@ -164,6 +167,9 @@ return [
             'route:cache',
             'route:clear',
             'route:list',
+        ],
+        'tinker' => [
+            'tinker'
         ],
         'view' => [
             'view:cache',

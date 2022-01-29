@@ -63,6 +63,9 @@ class AuthAPIController extends AppBaseController
      */
     public function register(RegisterAPIRequest $request)
     {
+        request()->request->add([
+            'password' => $request->password
+        ]);
         $user = $this->userRepository->register($request);
 
         if (empty($user)) {

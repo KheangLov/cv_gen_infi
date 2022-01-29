@@ -36,7 +36,7 @@
                             @csrf
                         </form>
                     @else
-                        <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Log in</a>
+                        <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Login</a>
 
                         @if (Route::has('register'))
                             <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 dark:text-gray-500 underline">Register</a>
@@ -106,7 +106,7 @@
 
                             <div class="ml-12">
                                 <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
-                                    This is a small package that can helps in debugging api logs. It can log request method, url, duration, request payload, which models are retrieved, controller and method.
+                                    This is a small package that can helps in debugging api logs. It can log request method, url, duration, request payload.
                                     <br>URL: <a href="https://github.com/aungwinthant/apilogger" target="_blank" class="underline">https://github.com/aungwinthant/apilogger</a>
                                 </div>
                             </div>
