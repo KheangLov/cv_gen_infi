@@ -2,28 +2,28 @@
 
 namespace Modules\Authentication\Http\Controllers\API;
 
-use App\Http\Requests\API\CreateCurriculumVitaeAPIRequest;
-use App\Http\Requests\API\UpdateCurriculumVitaeAPIRequest;
-use App\Models\CurriculumVitae;
-use App\Repositories\CurriculumVitaeRepository;
+use App\Http\Requests\API\CreateRoleAPIRequest;
+use App\Http\Requests\API\UpdateRoleAPIRequest;
+use App\Models\Role;
+use App\Repositories\RoleRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
-use App\Http\Resources\CurriculumVitaeResource;
+use App\Http\Resources\RoleResource;
 use Response;
 
 /**
- * Class CurriculumVitaeController
+ * Class RoleController
  * @package App\Http\Controllers\API
  */
 
-class CurriculumVitaeAPIController extends AppBaseController
+class RoleAPIController extends AppBaseController
 {
-    /** @var  CurriculumVitaeRepository */
-    private $curriculumVitaeRepository;
+    /** @var  RoleRepository */
+    private $roleRepository;
 
-    public function __construct(CurriculumVitaeRepository $curriculumVitaeRepo)
+    public function __construct(RoleRepository $roleRepo)
     {
-        $this->curriculumVitaeRepository = $curriculumVitaeRepo;
+        $this->roleRepository = $roleRepo;
     }
 
     /**
@@ -31,10 +31,10 @@ class CurriculumVitaeAPIController extends AppBaseController
      * @return Response
      *
      * @SWG\Get(
-     *      path="/curriculum_vitaes",
-     *      summary="Get a listing of the CurriculumVitaes.",
-     *      tags={"CurriculumVitae"},
-     *      description="Get all CurriculumVitaes",
+     *      path="/roles",
+     *      summary="Get a listing of the Roles.",
+     *      tags={"Role"},
+     *      description="Get all Roles",
      *      produces={"application/json"},
      *      @SWG\Response(
      *          response=200,
@@ -48,7 +48,7 @@ class CurriculumVitaeAPIController extends AppBaseController
      *              @SWG\Property(
      *                  property="data",
      *                  type="array",
-     *                  @SWG\Items(ref="#/definitions/CurriculumVitae")
+     *                  @SWG\Items(ref="#/definitions/Role")
      *              ),
      *              @SWG\Property(
      *                  property="message",
@@ -60,31 +60,31 @@ class CurriculumVitaeAPIController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $curriculumVitaes = $this->curriculumVitaeRepository->all(
+        $roles = $this->roleRepository->all(
             $request->except(['skip', 'limit']),
             $request->get('skip'),
             $request->get('limit')
         );
 
-        return $this->sendResponse(CurriculumVitaeResource::collection($curriculumVitaes), 'Curriculum Vitaes retrieved successfully');
+        return $this->sendResponse(RoleResource::collection($roles), 'Roles retrieved successfully');
     }
 
     /**
-     * @param CreateCurriculumVitaeAPIRequest $request
+     * @param CreateRoleAPIRequest $request
      * @return Response
      *
      * @SWG\Post(
-     *      path="/curriculum_vitaes",
-     *      summary="Store a newly created CurriculumVitae in storage",
-     *      tags={"CurriculumVitae"},
-     *      description="Store CurriculumVitae",
+     *      path="/roles",
+     *      summary="Store a newly created Role in storage",
+     *      tags={"Role"},
+     *      description="Store Role",
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          name="body",
      *          in="body",
-     *          description="CurriculumVitae that should be stored",
+     *          description="Role that should be stored",
      *          required=false,
-     *          @SWG\Schema(ref="#/definitions/CurriculumVitae")
+     *          @SWG\Schema(ref="#/definitions/Role")
      *      ),
      *      @SWG\Response(
      *          response=200,
@@ -97,7 +97,7 @@ class CurriculumVitaeAPIController extends AppBaseController
      *              ),
      *              @SWG\Property(
      *                  property="data",
-     *                  ref="#/definitions/CurriculumVitae"
+     *                  ref="#/definitions/Role"
      *              ),
      *              @SWG\Property(
      *                  property="message",
@@ -107,13 +107,13 @@ class CurriculumVitaeAPIController extends AppBaseController
      *      )
      * )
      */
-    public function store(CreateCurriculumVitaeAPIRequest $request)
+    public function store(CreateRoleAPIRequest $request)
     {
         $input = $request->all();
 
-        $curriculumVitae = $this->curriculumVitaeRepository->create($input);
+        $role = $this->roleRepository->create($input);
 
-        return $this->sendResponse(new CurriculumVitaeResource($curriculumVitae), 'Curriculum Vitae saved successfully');
+        return $this->sendResponse(new RoleResource($role), 'Role saved successfully');
     }
 
     /**
@@ -121,14 +121,14 @@ class CurriculumVitaeAPIController extends AppBaseController
      * @return Response
      *
      * @SWG\Get(
-     *      path="/curriculum_vitaes/{id}",
-     *      summary="Display the specified CurriculumVitae",
-     *      tags={"CurriculumVitae"},
-     *      description="Get CurriculumVitae",
+     *      path="/roles/{id}",
+     *      summary="Display the specified Role",
+     *      tags={"Role"},
+     *      description="Get Role",
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          name="id",
-     *          description="id of CurriculumVitae",
+     *          description="id of Role",
      *          type="integer",
      *          required=true,
      *          in="path"
@@ -144,7 +144,7 @@ class CurriculumVitaeAPIController extends AppBaseController
      *              ),
      *              @SWG\Property(
      *                  property="data",
-     *                  ref="#/definitions/CurriculumVitae"
+     *                  ref="#/definitions/Role"
      *              ),
      *              @SWG\Property(
      *                  property="message",
@@ -156,30 +156,30 @@ class CurriculumVitaeAPIController extends AppBaseController
      */
     public function show($id)
     {
-        /** @var CurriculumVitae $curriculumVitae */
-        $curriculumVitae = $this->curriculumVitaeRepository->find($id);
+        /** @var Role $role */
+        $role = $this->roleRepository->find($id);
 
-        if (empty($curriculumVitae)) {
-            return $this->sendError('Curriculum Vitae not found');
+        if (empty($role)) {
+            return $this->sendError('Role not found');
         }
 
-        return $this->sendResponse(new CurriculumVitaeResource($curriculumVitae), 'Curriculum Vitae retrieved successfully');
+        return $this->sendResponse(new RoleResource($role), 'Role retrieved successfully');
     }
 
     /**
      * @param int $id
-     * @param UpdateCurriculumVitaeAPIRequest $request
+     * @param UpdateRoleAPIRequest $request
      * @return Response
      *
      * @SWG\Put(
-     *      path="/curriculum_vitaes/{id}",
-     *      summary="Update the specified CurriculumVitae in storage",
-     *      tags={"CurriculumVitae"},
-     *      description="Update CurriculumVitae",
+     *      path="/roles/{id}",
+     *      summary="Update the specified Role in storage",
+     *      tags={"Role"},
+     *      description="Update Role",
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          name="id",
-     *          description="id of CurriculumVitae",
+     *          description="id of Role",
      *          type="integer",
      *          required=true,
      *          in="path"
@@ -187,9 +187,9 @@ class CurriculumVitaeAPIController extends AppBaseController
      *      @SWG\Parameter(
      *          name="body",
      *          in="body",
-     *          description="CurriculumVitae that should be updated",
+     *          description="Role that should be updated",
      *          required=false,
-     *          @SWG\Schema(ref="#/definitions/CurriculumVitae")
+     *          @SWG\Schema(ref="#/definitions/Role")
      *      ),
      *      @SWG\Response(
      *          response=200,
@@ -202,7 +202,7 @@ class CurriculumVitaeAPIController extends AppBaseController
      *              ),
      *              @SWG\Property(
      *                  property="data",
-     *                  ref="#/definitions/CurriculumVitae"
+     *                  ref="#/definitions/Role"
      *              ),
      *              @SWG\Property(
      *                  property="message",
@@ -212,20 +212,20 @@ class CurriculumVitaeAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateCurriculumVitaeAPIRequest $request)
+    public function update($id, UpdateRoleAPIRequest $request)
     {
         $input = $request->all();
 
-        /** @var CurriculumVitae $curriculumVitae */
-        $curriculumVitae = $this->curriculumVitaeRepository->find($id);
+        /** @var Role $role */
+        $role = $this->roleRepository->find($id);
 
-        if (empty($curriculumVitae)) {
-            return $this->sendError('Curriculum Vitae not found');
+        if (empty($role)) {
+            return $this->sendError('Role not found');
         }
 
-        $curriculumVitae = $this->curriculumVitaeRepository->update($input, $id);
+        $role = $this->roleRepository->update($input, $id);
 
-        return $this->sendResponse(new CurriculumVitaeResource($curriculumVitae), 'CurriculumVitae updated successfully');
+        return $this->sendResponse(new RoleResource($role), 'Role updated successfully');
     }
 
     /**
@@ -233,14 +233,14 @@ class CurriculumVitaeAPIController extends AppBaseController
      * @return Response
      *
      * @SWG\Delete(
-     *      path="/curriculum_vitaes/{id}",
-     *      summary="Remove the specified CurriculumVitae from storage",
-     *      tags={"CurriculumVitae"},
-     *      description="Delete CurriculumVitae",
+     *      path="/roles/{id}",
+     *      summary="Remove the specified Role from storage",
+     *      tags={"Role"},
+     *      description="Delete Role",
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          name="id",
-     *          description="id of CurriculumVitae",
+     *          description="id of Role",
      *          type="integer",
      *          required=true,
      *          in="path"
@@ -268,15 +268,15 @@ class CurriculumVitaeAPIController extends AppBaseController
      */
     public function destroy($id)
     {
-        /** @var CurriculumVitae $curriculumVitae */
-        $curriculumVitae = $this->curriculumVitaeRepository->find($id);
+        /** @var Role $role */
+        $role = $this->roleRepository->find($id);
 
-        if (empty($curriculumVitae)) {
-            return $this->sendError('Curriculum Vitae not found');
+        if (empty($role)) {
+            return $this->sendError('Role not found');
         }
 
-        $curriculumVitae->delete();
+        $role->delete();
 
-        return $this->sendSuccess('Curriculum Vitae deleted successfully');
+        return $this->sendSuccess('Role deleted successfully');
     }
 }

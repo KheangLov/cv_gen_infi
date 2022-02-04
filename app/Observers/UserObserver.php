@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\User;
+use Modules\Authentication\Entities\User;
 use Illuminate\Auth\Events\Registered;
 
 class UserObserver

@@ -2,28 +2,28 @@
 
 namespace Modules\Authentication\Http\Controllers\API;
 
-use App\Http\Requests\API\CreateCurriculumVitaeAPIRequest;
-use App\Http\Requests\API\UpdateCurriculumVitaeAPIRequest;
-use App\Models\CurriculumVitae;
-use App\Repositories\CurriculumVitaeRepository;
+use App\Http\Requests\API\CreatePermissionAPIRequest;
+use App\Http\Requests\API\UpdatePermissionAPIRequest;
+use App\Models\Permission;
+use App\Repositories\PermissionRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
-use App\Http\Resources\CurriculumVitaeResource;
+use App\Http\Resources\PermissionResource;
 use Response;
 
 /**
- * Class CurriculumVitaeController
+ * Class PermissionController
  * @package App\Http\Controllers\API
  */
 
-class CurriculumVitaeAPIController extends AppBaseController
+class PermissionAPIController extends AppBaseController
 {
-    /** @var  CurriculumVitaeRepository */
-    private $curriculumVitaeRepository;
+    /** @var  PermissionRepository */
+    private $permissionRepository;
 
-    public function __construct(CurriculumVitaeRepository $curriculumVitaeRepo)
+    public function __construct(PermissionRepository $permissionRepo)
     {
-        $this->curriculumVitaeRepository = $curriculumVitaeRepo;
+        $this->permissionRepository = $permissionRepo;
     }
 
     /**
@@ -31,10 +31,10 @@ class CurriculumVitaeAPIController extends AppBaseController
      * @return Response
      *
      * @SWG\Get(
-     *      path="/curriculum_vitaes",
-     *      summary="Get a listing of the CurriculumVitaes.",
-     *      tags={"CurriculumVitae"},
-     *      description="Get all CurriculumVitaes",
+     *      path="/permissions",
+     *      summary="Get a listing of the Permissions.",
+     *      tags={"Permission"},
+     *      description="Get all Permissions",
      *      produces={"application/json"},
      *      @SWG\Response(
      *          response=200,
@@ -48,7 +48,7 @@ class CurriculumVitaeAPIController extends AppBaseController
      *              @SWG\Property(
      *                  property="data",
      *                  type="array",
-     *                  @SWG\Items(ref="#/definitions/CurriculumVitae")
+     *                  @SWG\Items(ref="#/definitions/Permission")
      *              ),
      *              @SWG\Property(
      *                  property="message",
@@ -60,31 +60,31 @@ class CurriculumVitaeAPIController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $curriculumVitaes = $this->curriculumVitaeRepository->all(
+        $permissions = $this->permissionRepository->all(
             $request->except(['skip', 'limit']),
             $request->get('skip'),
             $request->get('limit')
         );
 
-        return $this->sendResponse(CurriculumVitaeResource::collection($curriculumVitaes), 'Curriculum Vitaes retrieved successfully');
+        return $this->sendResponse(PermissionResource::collection($permissions), 'Permissions retrieved successfully');
     }
 
     /**
-     * @param CreateCurriculumVitaeAPIRequest $request
+     * @param CreatePermissionAPIRequest $request
      * @return Response
      *
      * @SWG\Post(
-     *      path="/curriculum_vitaes",
-     *      summary="Store a newly created CurriculumVitae in storage",
-     *      tags={"CurriculumVitae"},
-     *      description="Store CurriculumVitae",
+     *      path="/permissions",
+     *      summary="Store a newly created Permission in storage",
+     *      tags={"Permission"},
+     *      description="Store Permission",
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          name="body",
      *          in="body",
-     *          description="CurriculumVitae that should be stored",
+     *          description="Permission that should be stored",
      *          required=false,
-     *          @SWG\Schema(ref="#/definitions/CurriculumVitae")
+     *          @SWG\Schema(ref="#/definitions/Permission")
      *      ),
      *      @SWG\Response(
      *          response=200,
@@ -97,7 +97,7 @@ class CurriculumVitaeAPIController extends AppBaseController
      *              ),
      *              @SWG\Property(
      *                  property="data",
-     *                  ref="#/definitions/CurriculumVitae"
+     *                  ref="#/definitions/Permission"
      *              ),
      *              @SWG\Property(
      *                  property="message",
@@ -107,13 +107,13 @@ class CurriculumVitaeAPIController extends AppBaseController
      *      )
      * )
      */
-    public function store(CreateCurriculumVitaeAPIRequest $request)
+    public function store(CreatePermissionAPIRequest $request)
     {
         $input = $request->all();
 
-        $curriculumVitae = $this->curriculumVitaeRepository->create($input);
+        $permission = $this->permissionRepository->create($input);
 
-        return $this->sendResponse(new CurriculumVitaeResource($curriculumVitae), 'Curriculum Vitae saved successfully');
+        return $this->sendResponse(new PermissionResource($permission), 'Permission saved successfully');
     }
 
     /**
@@ -121,14 +121,14 @@ class CurriculumVitaeAPIController extends AppBaseController
      * @return Response
      *
      * @SWG\Get(
-     *      path="/curriculum_vitaes/{id}",
-     *      summary="Display the specified CurriculumVitae",
-     *      tags={"CurriculumVitae"},
-     *      description="Get CurriculumVitae",
+     *      path="/permissions/{id}",
+     *      summary="Display the specified Permission",
+     *      tags={"Permission"},
+     *      description="Get Permission",
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          name="id",
-     *          description="id of CurriculumVitae",
+     *          description="id of Permission",
      *          type="integer",
      *          required=true,
      *          in="path"
@@ -144,7 +144,7 @@ class CurriculumVitaeAPIController extends AppBaseController
      *              ),
      *              @SWG\Property(
      *                  property="data",
-     *                  ref="#/definitions/CurriculumVitae"
+     *                  ref="#/definitions/Permission"
      *              ),
      *              @SWG\Property(
      *                  property="message",
@@ -156,30 +156,30 @@ class CurriculumVitaeAPIController extends AppBaseController
      */
     public function show($id)
     {
-        /** @var CurriculumVitae $curriculumVitae */
-        $curriculumVitae = $this->curriculumVitaeRepository->find($id);
+        /** @var Permission $permission */
+        $permission = $this->permissionRepository->find($id);
 
-        if (empty($curriculumVitae)) {
-            return $this->sendError('Curriculum Vitae not found');
+        if (empty($permission)) {
+            return $this->sendError('Permission not found');
         }
 
-        return $this->sendResponse(new CurriculumVitaeResource($curriculumVitae), 'Curriculum Vitae retrieved successfully');
+        return $this->sendResponse(new PermissionResource($permission), 'Permission retrieved successfully');
     }
 
     /**
      * @param int $id
-     * @param UpdateCurriculumVitaeAPIRequest $request
+     * @param UpdatePermissionAPIRequest $request
      * @return Response
      *
      * @SWG\Put(
-     *      path="/curriculum_vitaes/{id}",
-     *      summary="Update the specified CurriculumVitae in storage",
-     *      tags={"CurriculumVitae"},
-     *      description="Update CurriculumVitae",
+     *      path="/permissions/{id}",
+     *      summary="Update the specified Permission in storage",
+     *      tags={"Permission"},
+     *      description="Update Permission",
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          name="id",
-     *          description="id of CurriculumVitae",
+     *          description="id of Permission",
      *          type="integer",
      *          required=true,
      *          in="path"
@@ -187,9 +187,9 @@ class CurriculumVitaeAPIController extends AppBaseController
      *      @SWG\Parameter(
      *          name="body",
      *          in="body",
-     *          description="CurriculumVitae that should be updated",
+     *          description="Permission that should be updated",
      *          required=false,
-     *          @SWG\Schema(ref="#/definitions/CurriculumVitae")
+     *          @SWG\Schema(ref="#/definitions/Permission")
      *      ),
      *      @SWG\Response(
      *          response=200,
@@ -202,7 +202,7 @@ class CurriculumVitaeAPIController extends AppBaseController
      *              ),
      *              @SWG\Property(
      *                  property="data",
-     *                  ref="#/definitions/CurriculumVitae"
+     *                  ref="#/definitions/Permission"
      *              ),
      *              @SWG\Property(
      *                  property="message",
@@ -212,20 +212,20 @@ class CurriculumVitaeAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateCurriculumVitaeAPIRequest $request)
+    public function update($id, UpdatePermissionAPIRequest $request)
     {
         $input = $request->all();
 
-        /** @var CurriculumVitae $curriculumVitae */
-        $curriculumVitae = $this->curriculumVitaeRepository->find($id);
+        /** @var Permission $permission */
+        $permission = $this->permissionRepository->find($id);
 
-        if (empty($curriculumVitae)) {
-            return $this->sendError('Curriculum Vitae not found');
+        if (empty($permission)) {
+            return $this->sendError('Permission not found');
         }
 
-        $curriculumVitae = $this->curriculumVitaeRepository->update($input, $id);
+        $permission = $this->permissionRepository->update($input, $id);
 
-        return $this->sendResponse(new CurriculumVitaeResource($curriculumVitae), 'CurriculumVitae updated successfully');
+        return $this->sendResponse(new PermissionResource($permission), 'Permission updated successfully');
     }
 
     /**
@@ -233,14 +233,14 @@ class CurriculumVitaeAPIController extends AppBaseController
      * @return Response
      *
      * @SWG\Delete(
-     *      path="/curriculum_vitaes/{id}",
-     *      summary="Remove the specified CurriculumVitae from storage",
-     *      tags={"CurriculumVitae"},
-     *      description="Delete CurriculumVitae",
+     *      path="/permissions/{id}",
+     *      summary="Remove the specified Permission from storage",
+     *      tags={"Permission"},
+     *      description="Delete Permission",
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          name="id",
-     *          description="id of CurriculumVitae",
+     *          description="id of Permission",
      *          type="integer",
      *          required=true,
      *          in="path"
@@ -268,15 +268,15 @@ class CurriculumVitaeAPIController extends AppBaseController
      */
     public function destroy($id)
     {
-        /** @var CurriculumVitae $curriculumVitae */
-        $curriculumVitae = $this->curriculumVitaeRepository->find($id);
+        /** @var Permission $permission */
+        $permission = $this->permissionRepository->find($id);
 
-        if (empty($curriculumVitae)) {
-            return $this->sendError('Curriculum Vitae not found');
+        if (empty($permission)) {
+            return $this->sendError('Permission not found');
         }
 
-        $curriculumVitae->delete();
+        $permission->delete();
 
-        return $this->sendSuccess('Curriculum Vitae deleted successfully');
+        return $this->sendSuccess('Permission deleted successfully');
     }
 }

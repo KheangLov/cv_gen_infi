@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\API\AuthAPIController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,15 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group([
     'prefix' => 'v1',
+    'middleware' => ['auth:api']
 ], function () {
-    Route::post('/login', [AuthAPIController::class, 'login']);
-    Route::post('/register', [AuthAPIController::class, 'register']);
-    Route::get('/email/verify/{id}', [AuthAPIController::class, 'verify'])->name('verification.verify');
-    Route::get('/email/resend', [AuthAPIController::class, 'resend'])->name('verification.resend');
-    Route::middleware('auth:api')->group(function () {
-        Route::resource('users', 'UserAPIController');
-        Route::resource('curriculum_vitaes', 'CurriculumVitaeAPIController');
-        Route::resource('roles', 'RoleAPIController');
-        Route::resource('permissions', 'PermissionAPIController');
-    });
+    Route::resource('curriculum_vitaes', 'CurriculumVitaeAPIController');
 });
